@@ -5,6 +5,7 @@
       <map>
         <entry key="app/src/main/res/drawable/bg_retangule_rounded.xml" value="0.403" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.38958333333333334" />
+        <entry key="app/src/main/res/layout/adapter_address_list_item.xml" value="0.4036458333333333" />
       </map>
     </option>
   </component>

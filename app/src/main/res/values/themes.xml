@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.EditText.Search">
+    <style name="Theme.EditText.Search" parent="Theme.PostCodeSearch">
         <item name="drawableStartCompat">@android:drawable/ic_menu_search</item>
         <item name="android:drawableStart">@android:drawable/ic_menu_search</item>
         <item name="android:background">@drawable/bg_retangule_rounded</item>
@@ -22,7 +22,7 @@
         <item name="android:layout_margin">10dp</item>
     </style>
 
-    <style name="Theme.Button.Text">
+    <style name="Theme.Button.Text" parent="Theme.PostCodeSearch">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:text">@android:string/cancel</item>
         <item name="android:textAllCaps">false</item>
