@@ -9,11 +9,11 @@ import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.example.postcodesearch.data.AddressData
 import com.example.postcodesearch.ui.AddressAdapter
+import com.example.postcodesearch.ui.CancelableEditText
 
 class MainActivity : AppCompatActivity() {
 
-    private val editText: AppCompatEditText by lazy { findViewById(R.id.appCompatEditText) }
-    private val cancelButton: Button by lazy { findViewById(R.id.button) }
+    private val editText: CancelableEditText by lazy { findViewById(R.id.cancelableEditText) }
     private val recyclerView: RecyclerView by lazy { findViewById(R.id.recycler) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,21 +34,9 @@ class MainActivity : AppCompatActivity() {
         )
         recyclerView.adapter = AddressAdapter(addressList)
 
-        editTextSetup()
-        cancelButtonSetup()
-    }
-
-    private fun editTextSetup() {
-        editText.doOnTextChanged { text, start, before, count ->
-            cancelButton.visibility = when (text.isNullOrBlank()) {
-                true -> View.GONE
-                false -> View.VISIBLE
-            }
+        editText.onTextChanged = CancelableEditText.OnTextChanged { text ->
+            //Todo - implement feth
         }
-    }
-
-    private fun cancelButtonSetup() {
-        cancelButton.setOnClickListener { editText.setText("") }
     }
 
 }
