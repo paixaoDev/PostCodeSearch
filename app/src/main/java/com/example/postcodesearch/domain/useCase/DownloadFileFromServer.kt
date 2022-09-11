@@ -15,7 +15,7 @@ class DownloadFileFromServer @Inject constructor(
     operator fun invoke(): Flow<CallResult<ResponseBody>> = flow {
         try {
             emit(CallResult.Loading())
-            //TODO verifi if file exists
+            //TODO verify if file exists
             val addressFile = repository.getAddressFromApi()
             emit(CallResult.Success(addressFile))
         } catch (e: HttpException) {

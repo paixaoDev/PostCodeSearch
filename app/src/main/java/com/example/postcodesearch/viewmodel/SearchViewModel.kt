@@ -17,7 +17,6 @@ class SearchViewModel @Inject constructor(
     private val addressRepository: AddressRepository
 ) : ViewModel() {
 
-
     fun downloadFileAndSave() {
         downloadFile().onEach { result ->
             when (result) {
@@ -29,6 +28,7 @@ class SearchViewModel @Inject constructor(
                 }
                 is CallResult.Success -> {
                     Log.d("Call", result.data.toString())
+                    //TODO save file
                 }
             }
         }.launchIn(viewModelScope)
