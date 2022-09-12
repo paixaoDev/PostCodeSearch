@@ -9,13 +9,15 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+
+
 class DownloadFileFromServer @Inject constructor(
     private val repository: AddressRepository
 ) {
+
     operator fun invoke(): Flow<CallResult<ResponseBody>> = flow {
         try {
             emit(CallResult.Loading())
-            //TODO verify if file exists
             val addressFile = repository.getAddressFromApi()
             emit(CallResult.Success(addressFile))
         } catch (e: HttpException) {

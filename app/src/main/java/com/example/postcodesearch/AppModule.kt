@@ -1,5 +1,8 @@
 package com.example.postcodesearch
 
+import android.app.Application
+import androidx.room.Room
+import com.example.postcodesearch.domain.local.AddresLocalDataBase
 import com.example.postcodesearch.domain.remote.GitHubApi
 import com.example.postcodesearch.domain.repository.AddressRepository
 import com.example.postcodesearch.domain.repository.AddressRepositoryImp
@@ -29,7 +32,18 @@ object AppModule {
     @Singleton
     fun provideAddressRepository(
         api: GitHubApi,
+        db: AddresLocalDataBase
     ): AddressRepository {
-        return AddressRepositoryImp(api)
+        return AddressRepositoryImp(api, db.dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAddressDatabase(app: Application): AddresLocalDataBase {
+        return Room.databaseBuilder(
+            app,
+            AddresLocalDataBase::class.java,
+            "address_db"
+        ).build()
     }
 }
