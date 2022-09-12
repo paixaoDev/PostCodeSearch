@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        editText.onTextChanged = CancelableEditText.OnTextChanged { text ->
+        editText.onAfterTextChanged = CancelableEditText.AfterTextChanged { text ->
             viewModel.searchAddress(text)
         }
 

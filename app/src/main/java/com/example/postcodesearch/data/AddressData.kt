@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.postcodesearch.utils.capitalizeWorld
+import com.example.postcodesearch.utils.removeAccents
 import okhttp3.ResponseBody
 import java.io.File
 
@@ -36,10 +38,11 @@ data class AddressData(
             transformedList = mutableListOf()
             for (line in readList) {
                 val dataSelected = line.split(",")
+                //TODO adjust text
                 transformedList.add(
                     AddressData(
-                        fullAddress = "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]} ${dataSelected.last()}",
-                        localName = dataSelected.last().toString(),
+                        fullAddress = "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]} ${dataSelected.last().removeAccents()}",
+                        localName = dataSelected.last().toString().capitalizeWorld(),
                         postalCode = "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]}"
                     )
                 )

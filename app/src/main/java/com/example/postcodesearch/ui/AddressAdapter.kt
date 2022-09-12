@@ -12,6 +12,12 @@ class AddressAdapter :
     RecyclerView.Adapter<AddressAdapter.ViewHolder>() {
 
     var address: List<AddressData>? = null
+    set(value) {
+        if(!value.isNullOrEmpty()){
+            field = value
+            notifyDataSetChanged()
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(

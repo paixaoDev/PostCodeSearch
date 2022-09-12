@@ -10,6 +10,8 @@
         style="@style/Theme.EditText.Search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:inputType="text"
+        android:maxLines="1"
         android:layout_weight="1" />
 
     <Button

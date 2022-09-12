@@ -10,6 +10,6 @@ import com.example.postcodesearch.data.AddressData
     entities = [AddressData::class],
     version = 1
 )
-abstract class AddresLocalDataBase : RoomDatabase() {
+abstract class AddressLocalDataBase : RoomDatabase() {
     abstract val dao: AddresDataDao
 }

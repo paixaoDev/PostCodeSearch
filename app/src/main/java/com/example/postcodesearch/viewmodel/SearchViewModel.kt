@@ -8,11 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.postcodesearch.data.AddressData
 import com.example.postcodesearch.data.CallResult
 import com.example.postcodesearch.data.CallStateResult
-import com.example.postcodesearch.domain.repository.AddressRepository
 import com.example.postcodesearch.domain.useCase.DownloadFileFromServer
 import com.example.postcodesearch.domain.useCase.GetDataFromLocalStorage
 import com.example.postcodesearch.domain.useCase.SaveDataInLocalStorage
 import com.example.postcodesearch.domain.useCase.SearchForAddress
+import com.example.postcodesearch.utils.adjustQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -23,8 +23,7 @@ class SearchViewModel @Inject constructor(
     private val downloadFile: DownloadFileFromServer,
     private val saveDataInLocalstorage: SaveDataInLocalStorage,
     private val getDataFromLocalStorage: GetDataFromLocalStorage,
-    private val searchForAddress: SearchForAddress,
-    private val addressRepository: AddressRepository,
+    private val searchForAddress: SearchForAddress
 ) : ViewModel() {
 
     private val _addressesState = MutableLiveData<CallStateResult>()
@@ -102,6 +101,11 @@ class SearchViewModel @Inject constructor(
     }
 
     fun searchAddress(query: String){
+        if(query.isBlank()){
+            getDataFromLocal()
+            return
+        }
+
         searchForAddress(query).onEach { result ->
             when (result) {
                 is CallResult.Loading -> {
