@@ -1,103 +1,67 @@
 package com.example.postcodesearch.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.postcodesearch.data.AddressData
-import com.example.postcodesearch.data.CallResult
 import com.example.postcodesearch.data.CallStateResult
-import com.example.postcodesearch.domain.useCase.DownloadFileFromServer
-import com.example.postcodesearch.domain.useCase.GetDataFromLocalStorage
-import com.example.postcodesearch.domain.useCase.SaveDataInLocalStorage
-import com.example.postcodesearch.domain.useCase.SearchForAddress
-import com.example.postcodesearch.utils.adjustQuery
+import com.example.postcodesearch.domain.repository.AddressRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val downloadFile: DownloadFileFromServer,
-    private val saveDataInLocalstorage: SaveDataInLocalStorage,
-    private val getDataFromLocalStorage: GetDataFromLocalStorage,
-    private val searchForAddress: SearchForAddress
+    private val repository: AddressRepository
 ) : ViewModel() {
 
     private val _addressesState = MutableLiveData<CallStateResult>()
     fun addressesState(): LiveData<CallStateResult> = _addressesState
 
     fun downloadFileAndSave() {
-        downloadFile().onEach { result ->
-            when (result) {
-                is CallResult.Loading -> {
-                    _addressesState.postValue(CallStateResult.Loading)
+        viewModelScope.launch {
+            _addressesState.postValue(CallStateResult.Loading)
+            kotlin.runCatching { repository.getAddressFromApi() }
+                .onSuccess { result ->
+                    _addressesState.postValue(CallStateResult.OnRemoteAddressFileReceived(result))
                 }
-                is CallResult.Error -> {
+                .onFailure { error ->
                     _addressesState.postValue(
-                        CallStateResult.Error(
-                            result.message ?: ""
-                        )
+                        CallStateResult.Error(error.message ?: "")
                     )
                 }
-                is CallResult.Success -> {
-                    Log.d("Call", result.data.toString())
-                    _addressesState.postValue(
-                        result.data?.let {
-                            CallStateResult.OnRemoteAddressFileReceived(it)
-                        }
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
+        }
     }
 
     fun saveData(addressList: MutableList<AddressData>) {
-        saveDataInLocalstorage(addressList).onEach { result ->
-            when (result) {
-                is CallResult.Loading -> {
-                    _addressesState.postValue(CallStateResult.Loading)
-                }
-                is CallResult.Success -> {
+        viewModelScope.launch {
+            _addressesState.postValue(CallStateResult.Loading)
+            kotlin.runCatching { repository.saveAddresses(addressList) }
+                .onSuccess {
                     _addressesState.postValue(CallStateResult.OnDataSaved)
                 }
-                is CallResult.Error -> {
+                .onFailure { error ->
                     _addressesState.postValue(
-                        CallStateResult.Error(
-                            result.message ?: ""
-                        )
+                        CallStateResult.Error(error.message ?: "")
                     )
                 }
-            }
-        }.launchIn(viewModelScope)
+        }
     }
 
     fun getDataFromLocal() {
-        getDataFromLocalStorage().onEach { result ->
-            when (result) {
-                is CallResult.Loading -> {
-                    _addressesState.postValue(CallStateResult.Loading)
+        viewModelScope.launch {
+            _addressesState.postValue(CallStateResult.Loading)
+            kotlin.runCatching { repository.getAddressesFromLocalDatabase() }
+                .onSuccess { result ->
+                    _addressesState.postValue(CallStateResult.OnAddressesFetchedFromLocal(result))
                 }
-                is CallResult.Success -> {
+                .onFailure { error ->
                     _addressesState.postValue(
-                        result.data?.let {
-                            CallStateResult.OnAddressesFetchedFromLocal(
-                                it
-                            )
-                        }
+                        CallStateResult.Error(error.message ?: "")
                     )
                 }
-                is CallResult.Error -> {
-                    _addressesState.postValue(
-                        CallStateResult.Error(
-                            result.message ?: ""
-                        )
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
+        }
     }
 
     fun searchAddress(query: String){
@@ -105,25 +69,17 @@ class SearchViewModel @Inject constructor(
             getDataFromLocal()
             return
         }
-
-        searchForAddress(query).onEach { result ->
-            when (result) {
-                is CallResult.Loading -> {
-                    _addressesState.postValue(CallStateResult.Loading)
+        viewModelScope.launch {
+            _addressesState.postValue(CallStateResult.Loading)
+            kotlin.runCatching { repository.searchForAddress(query) }
+                .onSuccess { result ->
+                    _addressesState.postValue(CallStateResult.OnQueryFinished(result))
                 }
-                is CallResult.Success -> {
+                .onFailure { error ->
                     _addressesState.postValue(
-                        result.data?.let { CallStateResult.OnQueryFinished(it) }
+                        CallStateResult.Error(error.message ?: "")
                     )
                 }
-                is CallResult.Error -> {
-                    _addressesState.postValue(
-                        CallStateResult.Error(
-                            result.message ?: "Error while searching address"
-                        )
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
+        }
     }
 }

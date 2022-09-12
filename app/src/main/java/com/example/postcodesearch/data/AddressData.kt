@@ -18,9 +18,8 @@ data class AddressData(
     @PrimaryKey
     val postalCode: String
 ) {
-
     companion object {
-        private var transformedList: MutableList<AddressData> = mutableListOf()
+        private var addressList: MutableList<AddressData> = mutableListOf()
 
         fun saveFile(context: Context, body: ResponseBody) {
             if (!addressFileExists(context)) {
@@ -28,18 +27,18 @@ data class AddressData(
                     it.write(body.bytes())
                 }
             } else {
-                Log.e("Wtest", "File Already Downloaded")
+                Log.e("EFileManager", "File Already Downloaded")
             }
         }
 
         fun mapFileDataIntoObjectList(context: Context): MutableList<AddressData> {
             val file = File(context.filesDir, FILE_NAME)
             val readList = file.readLines()
-            transformedList = mutableListOf()
+            addressList = mutableListOf()
             for (line in readList) {
                 val dataSelected = line.split(",")
                 //TODO adjust text
-                transformedList.add(
+                addressList.add(
                     AddressData(
                         fullAddress = "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]} ${dataSelected.last().removeAccents()}",
                         localName = dataSelected.last().toString().capitalizeWorld(),
@@ -47,8 +46,8 @@ data class AddressData(
                     )
                 )
             }
-            transformedList.removeAt(0)
-            return transformedList
+            addressList.removeAt(0)
+            return addressList
         }
 
         private fun addressFileExists(context: Context): Boolean {

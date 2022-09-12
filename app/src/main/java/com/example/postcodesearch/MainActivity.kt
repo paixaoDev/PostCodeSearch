@@ -19,9 +19,9 @@ class MainActivity : AppCompatActivity() {
     private val editText: CancelableEditText by lazy { findViewById(R.id.cancelableEditText) }
     private val loading: View by lazy { findViewById(R.id.loading) }
     private val recyclerView: RecyclerView by lazy { findViewById(R.id.recycler) }
-    private val viewModel: SearchViewModel by viewModels()
-
     private val localAddressAdapter by lazy { AddressAdapter() }
+
+    private val viewModel: SearchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

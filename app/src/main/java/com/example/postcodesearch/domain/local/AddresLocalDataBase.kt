@@ -8,7 +8,7 @@ import com.example.postcodesearch.data.AddressData
 
 @Database(
     entities = [AddressData::class],
-    version = 1
+    version = 2
 )
 abstract class AddressLocalDataBase : RoomDatabase() {
     abstract val dao: AddresDataDao
