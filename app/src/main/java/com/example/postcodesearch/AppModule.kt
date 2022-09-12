@@ -40,10 +40,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAddressDatabase(app: Application): AddressLocalDataBase {
-        return Room.databaseBuilder(
-            app,
-            AddressLocalDataBase::class.java,
-            "address_db"
-        ).build()
+        return Room.databaseBuilder(app, AddressLocalDataBase::class.java, "address_db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }
