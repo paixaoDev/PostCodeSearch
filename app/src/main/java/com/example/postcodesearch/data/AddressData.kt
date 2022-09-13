@@ -37,7 +37,6 @@ data class AddressData(
             addressList = mutableListOf()
             for (line in readList) {
                 val dataSelected = line.split(",")
-                //TODO adjust text
                 addressList.add(
                     AddressData(
                         fullAddress = "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]} ${dataSelected.last().removeAccents()}",

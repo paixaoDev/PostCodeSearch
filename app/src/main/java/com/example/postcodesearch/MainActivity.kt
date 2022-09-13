@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 is CallStateResult.OnQueryFinished -> {
                     hideLoading()
-                    localAddressAdapter.address = state.querryList
+                    localAddressAdapter.address = state.queryList
                 }
                 is CallStateResult.Error -> {
                     hideLoading()
